@@ -1,0 +1,6 @@
+---
+# tasks file for copy
+- name: Copy index file to Apache web page
+  copy: 
+    src: /tmp/index.html
+    dest: /var/www/html

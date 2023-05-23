@@ -1,0 +1,9 @@
+---
+
+- hosts: 63.32.103.76
+  remote_user: ubuntu
+
+  roles:
+    - install
+    - copy
+    - port

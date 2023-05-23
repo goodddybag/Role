@@ -1,0 +1,92 @@
+---
+# tasks file for install
+- name: update repository index
+  apt:
+    update_cache: yes
+  when: ansible_distribution == "Ubuntu"
+
+- name: Install latest version of Apache
+  apt: 
+    name: apache2 
+    state: latest
+  when: ansible_distribution == "Ubuntu"
+
+
+- name: Install unzip package
+  package:
+    name: unzip
+
+- name: Install Terraform
+  unarchive:
+    src: https://releases.hashicorp.com/terraform/0.12.28/terraform_0.12.28_linux_amd64.zip
+    dest: /usr/local/bin
+    remote_src: yes
+    mode: '0755'
+
+- name: Download Jenkins apt key
+  apt_key:
+    url: "{{ jenkins.repo_URL }}"
+    state: present
+  become: yes
+
+- name: Ensure Jenkins repository is configured
+  apt_repository:
+    repo: 'deb https://pkg.jenkins.io/debian-stable binary/'
+    state: present
+  become: yes
+
+- name: Update apt cache
+  apt:
+    update_cache: yes
+    cache_valid_time: 3600
+    state: latest
+
+- name: Install Java
+  apt:
+    name: "{{ java }}"
+    state: present
+
+- name: Install Jenkins
+  apt:
+    name: jenkins
+    state: latest
+
+- name: Start Jenkins
+  service:
+    name: jenkins
+    enabled: yes
+    state: started
+
+- name: Install required system packages
+  apt:
+    name:
+      - apt-transport-https
+      - ca-certificates
+      - curl
+      - software-properties-common
+      - python3-pip
+      - virtualenv
+      - python3-setuptools
+    state: latest
+    update_cache: yes
+
+- name: Add Docker GPG apt key
+  apt_key:
+    url: https://download.docker.com/linux/ubuntu/gpg
+    state: present
+
+- name: Add Docker repository
+  apt_repository:
+    repo: 'deb https://download.docker.com/linux/ubuntu focal stable'
+    state: present
+- name: Update apt and install docker-ce and docker-compose
+  apt:
+    name:
+      - docker-ce
+      - docker-compose
+    state: latest
+    update_cache: yes
+
+- name: Install Docker module for Python
+  pip:
+    name: docker

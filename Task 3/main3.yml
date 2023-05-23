@@ -1,0 +1,11 @@
+---
+- name: Add Firewall Rules
+  firewalld:
+    port: 80/tcp
+    permanent: true
+    state: enabled
+
+- name: Reload firewall configuration for the new rule
+  systemd:
+    name: firewalld
+    state: reloaded
