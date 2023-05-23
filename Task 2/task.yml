@@ -1,0 +1,58 @@
+---
+- name: Install apache on CentOS
+  hosts: centOS
+  become: true
+  tasks:
+    - name: Install Apache
+      yum:
+        name: httpd
+        state: present
+      when: ansible_distribution == 'CentOS'
+      
+    - name: Start Apache on CentOS
+      service:
+        name: httpd
+        state: started
+      when: ansible_distribution == 'CentOS'
+      
+- name: Install Nginx on Ubuntu
+  hosts: webserver
+  become: 
+   tasks:
+    - name: Install nginx
+      apt:
+        name: nginx
+        state: present
+       
+    - name: Start nginx 
+      service:
+        name: nginx
+        state: started
+
+- name: Update and install php
+  hosts: parent
+  become: 
+   tasks:   
+    - name: Update packages 
+      apt:
+        update_cache: yes
+      when: ansible_distribution == 'Ubuntu'
+
+    - name: Update packages on CentOS
+      yum:
+        name: '*'
+        state: latest
+      when: ansible_distribution == 'CentOS'  
+
+    - name: Pre-task | Install PHP (Ubunu) 
+      apt:
+        name: php
+        state: present 
+      when: ansible_distribution == 'Ubuntu'
+
+    - name: Pre-task | Install PHP (CentOS) 
+      apt:
+        name: php
+        state: present 
+      when: ansible_distribution == 'CentOS'
+  

@@ -29,14 +29,12 @@
         name: httpd
         state: present
       when: ansible_distribution == 'CentOS'
-      tags: [centos, apache]
 
     - name: Start Apache on CentOS
       service:
         name: httpd
         state: started
       when: ansible_distribution == 'CentOS'
-      tags: [centos, apache]
 
     - name: Install apache 
       apt:

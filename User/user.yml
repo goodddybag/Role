@@ -1,0 +1,17 @@
+---
+- name: Create users
+  hosts: all
+  become: true
+  vars:
+    users:
+      - username: james
+      - username: joy
+      - username: amaka
+      - username: cloudtopg
+
+  tasks:
+    - name: Create user accounts
+      users: 
+        name: "{{ item.username }}"
+        state: present
+      loop: "{{ users }}"
